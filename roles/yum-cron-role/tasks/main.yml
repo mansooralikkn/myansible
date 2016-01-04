@@ -1,0 +1,26 @@
+---
+- name: Install yum-cron.
+  sudo: yes
+  yum:
+    name: yum-cron
+    state: present
+- name: getting hostname.
+  sudo: yes
+  shell: hostname
+  register: hostname
+
+
+- name: Copy the configuration file (CentOS 7).
+  sudo: yes
+  template:
+    src: yum-cron.conf.j
+    dest: /etc/yum/yum-cron.conf
+  notify:
+    - restart yum-cron
+
+- name: Start yum-cron.
+  sudo: yes
+  service:
+    name: yum-cron
+    state: running
+    enabled: yes
