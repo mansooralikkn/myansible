@@ -6,7 +6,7 @@
     state: present
 - name: getting hostname.
   sudo: yes
-  shell: hostname
+  shell: echo $PS1 |cut -d @ -f2 | cut -d : -f1
   register: hostname
 
 
