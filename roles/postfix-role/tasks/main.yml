@@ -1,0 +1,40 @@
+---
+- name: "ensure that  the sendmail is stopped or uninstaled"
+  sudo: yes
+  service: 
+    name: sendmail 
+    state: stopped 
+    enabled: no
+- name: "install postfix"
+  sudo: yes
+  yum: 
+    name: postfix 
+    state: present
+- name: "enable and start postfix"
+  sudo: yes
+  service: 
+    name: postfix 
+    state: running
+    enabled: yes
+- name: "copy configuration files"
+  sudo: yes
+  template:
+    src: main.cf.j2
+    dest: /etc/postfix/main.cf
+- name: "copy configuration files"
+  sudo: yes
+  template:
+    src: master.cf.j2
+    dest: /etc/postfix/master.cf
+- name: "copy configuration files"
+  sudo: yes
+  template:
+    src: sasl_passwd.j2
+    dest: /etc/postfix/sasl_passwd
+- name: "hashing the sasl password"
+  sudo: yes
+  shell: postmap hash:/etc/postfix/sasl_passwd; rm /etc/postfix/sasl_passwd ;sudo chmod 0600  /etc/postfix/sasl_passwd.db
+- name: "verify certificate"
+  sudo: yes
+  shell: postconf -e 'smtp_tls_CAfile = /etc/ssl/certs/ca-bundle.crt' 
+    
