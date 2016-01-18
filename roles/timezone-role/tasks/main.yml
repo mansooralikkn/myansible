@@ -1,0 +1,10 @@
+---
+- name: "copy clock file "
+  sudo: yes
+  template:
+    src: clock.j2
+    dest: /etc/sysconfig/clock
+
+- name: "updating the locatime file"
+  sudo: yes
+  shell: ln -sf /usr/share/zoneinfo/CST6CDT /etc/localtime
